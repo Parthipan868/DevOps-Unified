@@ -132,6 +132,7 @@ const JenkinsTab = () => {
     const [pipelines, setPipelines] = useState([]);
     const [loading, setLoading] = useState(true);
     const [logViewer, setLogViewer] = useState({ isOpen: false, pipelineName: '', logs: '', loading: false });
+    const [showNewPipelineModal, setShowNewPipelineModal] = useState(false);
 
     useEffect(() => {
         const fetchPipelines = async () => {
@@ -211,7 +212,10 @@ const JenkinsTab = () => {
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">Jenkins Pipelines</h2>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">Monitor and trigger your CI/CD workflows.</p>
                 </div>
-                <button className="px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center gap-2">
+                <button
+                    onClick={() => setShowNewPipelineModal(true)}
+                    className="px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors flex items-center gap-2"
+                >
                     <Terminal size={18} />
                     New Pipeline
                 </button>
@@ -235,6 +239,66 @@ const JenkinsTab = () => {
                 logs={logViewer.logs}
                 loading={logViewer.loading}
             />
+
+            {/* New Pipeline Modal */}
+            {showNewPipelineModal && (
+                <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+                    <div className="bg-white dark:bg-gray-900 rounded-xl shadow-2xl w-full max-w-2xl border border-gray-200 dark:border-gray-700">
+                        <div className="flex justify-between items-center p-6 border-b border-gray-200 dark:border-gray-700">
+                            <h3 className="font-semibold text-xl text-gray-900 dark:text-white flex items-center gap-2">
+                                <Terminal size={24} className="text-orange-600" />
+                                Create New Pipeline
+                            </h3>
+                            <button onClick={() => setShowNewPipelineModal(false)} className="text-gray-500 hover:text-gray-700 dark:hover:text-gray-300">
+                                <XCircle size={24} />
+                            </button>
+                        </div>
+                        <div className="p-6 space-y-4">
+                            <div className="bg-blue-50 dark:bg-blue-900/20 border border-blue-200 dark:border-blue-800 rounded-lg p-4">
+                                <p className="text-sm text-blue-900 dark:text-blue-200">
+                                    <strong>Note:</strong> Pipelines are created directly in Jenkins. This dashboard monitors your existing Jenkins pipelines.
+                                </p>
+                            </div>
+
+                            <div>
+                                <h4 className="font-semibold text-gray-900 dark:text-white mb-2">To create a new Jenkins Pipeline:</h4>
+                                <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
+                                    <li>Open your Jenkins dashboard at <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">http://localhost:8080</code></li>
+                                    <li>Click on <strong>"New Item"</strong> in the left sidebar</li>
+                                    <li>Enter a name for your pipeline</li>
+                                    <li>Select <strong>"Pipeline"</strong> as the item type</li>
+                                    <li>Click <strong>"OK"</strong> to configure your pipeline</li>
+                                    <li>Define your pipeline script or link to a Jenkinsfile in your repository</li>
+                                    <li>Save your configuration</li>
+                                </ol>
+                            </div>
+
+                            <div className="mt-4">
+                                <p className="text-sm text-gray-600 dark:text-gray-400 mb-3">
+                                    Once created, your new pipeline will automatically appear in this dashboard!
+                                </p>
+                                <a
+                                    href="http://localhost:8080"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors"
+                                >
+                                    <Terminal size={18} />
+                                    Open Jenkins Dashboard
+                                </a>
+                            </div>
+                        </div>
+                        <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end">
+                            <button
+                                onClick={() => setShowNewPipelineModal(false)}
+                                className="px-4 py-2 bg-gray-200 dark:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-lg font-medium hover:bg-gray-300 dark:hover:bg-gray-600 transition-colors"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 };
