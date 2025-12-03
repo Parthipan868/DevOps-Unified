@@ -71,6 +71,7 @@ const GitHubTab = () => {
     const [filter, setFilter] = useState('all');
     const [repos, setRepos] = useState([]);
     const [loading, setLoading] = useState(true);
+    const [syncing, setSyncing] = useState(false);
 
     // Language color mapping
     const getLanguageColor = (language) => {
@@ -95,28 +96,48 @@ const GitHubTab = () => {
         return colors[language] || 'bg-gray-400';
     };
 
-    useEffect(() => {
-        const fetchRepos = async () => {
-            try {
-                const response = await fetch('http://localhost:5000/api/github/repos');
-                if (response.ok) {
-                    const data = await response.json();
-                    // Transform data to include languageColor
-                    const transformedData = data.map(repo => ({
-                        ...repo,
-                        id: repo._id || repo.id,
-                        languageColor: getLanguageColor(repo.language),
-                        isFavorite: false // Can be extended later with user preferences
-                    }));
-                    setRepos(transformedData);
-                }
-            } catch (error) {
-                console.error('Error fetching repos:', error);
-            } finally {
-                setLoading(false);
+    const fetchRepos = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/api/github/repos');
+            if (response.ok) {
+                const data = await response.json();
+                // Transform data to include languageColor
+                const transformedData = data.map(repo => ({
+                    ...repo,
+                    id: repo._id || repo.id,
+                    languageColor: getLanguageColor(repo.language),
+                    isFavorite: false // Can be extended later with user preferences
+                }));
+                setRepos(transformedData);
             }
-        };
+        } catch (error) {
+            console.error('Error fetching repos:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
 
+    const handleSyncRepos = async () => {
+        setSyncing(true);
+        try {
+            const response = await fetch('http://localhost:5000/api/github/sync', {
+                method: 'POST',
+            });
+            if (response.ok) {
+                await fetchRepos();
+                alert('Repositories synced successfully!');
+            } else {
+                alert('Failed to sync repositories. Please check your GitHub token.');
+            }
+        } catch (error) {
+            console.error('Error syncing repos:', error);
+            alert('Error syncing repositories');
+        } finally {
+            setSyncing(false);
+        }
+    };
+
+    useEffect(() => {
         fetchRepos();
     }, []);
 
@@ -131,9 +152,13 @@ const GitHubTab = () => {
                     <h2 className="text-3xl font-bold text-gray-900 dark:text-white">GitHub Repositories</h2>
                     <p className="text-gray-500 dark:text-gray-400 mt-1">Manage and monitor your code repositories.</p>
                 </div>
-                <button className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center gap-2">
-                    <Github size={18} />
-                    Connect New Repo
+                <button
+                    onClick={handleSyncRepos}
+                    disabled={syncing}
+                    className="px-4 py-2 bg-gray-900 dark:bg-white text-white dark:text-gray-900 rounded-lg font-medium hover:opacity-90 transition-opacity flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                >
+                    <Github size={18} className={syncing ? 'animate-spin' : ''} />
+                    {syncing ? 'Syncing...' : 'Sync Repositories'}
                 </button>
             </div>
 

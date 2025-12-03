@@ -106,3 +106,72 @@ export const syncRepos = async (req, res) => {
         });
     }
 };
+
+export const getRecentActivity = async (req, res) => {
+    try {
+        console.log('Fetching recent GitHub activity...');
+
+        // Fetch recent events for the authenticated user
+        const { data: events } = await octokit.rest.activity.listEventsForAuthenticatedUser({
+            username: process.env.GITHUB_USERNAME || 'Parthipan868',
+            per_page: 10
+        });
+
+        console.log(`Fetched ${events.length} events from GitHub`);
+
+        // Format events into activity items
+        const activities = events.slice(0, 3).map(event => {
+            let action = 'Activity';
+
+            switch (event.type) {
+                case 'PushEvent':
+                    const commits = event.payload.commits?.length || 1;
+                    action = commits > 1 ? `${commits} new commits` : 'New commit';
+                    break;
+                case 'PullRequestEvent':
+                    action = `Pull Request ${event.payload.action}`;
+                    break;
+                case 'IssuesEvent':
+                    action = `Issue ${event.payload.action}`;
+                    break;
+                case 'CreateEvent':
+                    action = `Created ${event.payload.ref_type}`;
+                    break;
+                case 'WatchEvent':
+                    action = 'Starred repository';
+                    break;
+                case 'ForkEvent':
+                    action = 'Forked repository';
+                    break;
+                default:
+                    action = event.type.replace('Event', '');
+            }
+
+            return {
+                repo: event.repo.name.split('/')[1] || event.repo.name,
+                action,
+                user: event.actor.login,
+                time: new Date(event.created_at).toLocaleString('en-US', {
+                    hour: 'numeric',
+                    minute: 'numeric',
+                    hour12: true,
+                    month: 'short',
+                    day: 'numeric'
+                }),
+                avatar: event.actor.avatar_url
+            };
+        });
+
+        res.json(activities);
+    } catch (error) {
+        console.error('GitHub Activity Error:', error.message);
+
+        // Return fallback data if API fails
+        res.json([
+            { repo: 'devops-dashboard', action: 'New commit', user: 'Parthipan868', time: 'Recently' },
+            { repo: 'microservices-demo', action: 'Pull Request opened', user: 'Parthipan868', time: 'Recently' },
+            { repo: 'infra-as-code', action: 'Issue created', user: 'Parthipan868', time: 'Recently' }
+        ]);
+    }
+};
+
