@@ -35,21 +35,43 @@ const DashboardHome = () => {
         containerCount: 0,
         buildSuccessRate: 0
     });
+    const [recentBuilds, setRecentBuilds] = useState([]);
+    const [githubActivity, setGithubActivity] = useState([]);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const fetchStats = async () => {
+        const fetchDashboardData = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/stats');
-                if (response.ok) {
-                    const data = await response.json();
-                    setStats(data);
+                setLoading(true);
+
+                // Fetch stats
+                const statsResponse = await fetch('http://localhost:5000/api/stats');
+                if (statsResponse.ok) {
+                    const statsData = await statsResponse.json();
+                    setStats(statsData);
+                }
+
+                // Fetch recent builds
+                const buildsResponse = await fetch('http://localhost:5000/api/jenkins/recent-builds');
+                if (buildsResponse.ok) {
+                    const buildsData = await buildsResponse.json();
+                    setRecentBuilds(buildsData);
+                }
+
+                // Fetch GitHub activity
+                const activityResponse = await fetch('http://localhost:5000/api/github/activity');
+                if (activityResponse.ok) {
+                    const activityData = await activityResponse.json();
+                    setGithubActivity(activityData);
                 }
             } catch (error) {
-                console.error('Error fetching stats:', error);
+                console.error('Error fetching dashboard data:', error);
+            } finally {
+                setLoading(false);
             }
         };
 
-        fetchStats();
+        fetchDashboardData();
     }, []);
 
     return (
@@ -104,24 +126,26 @@ const DashboardHome = () => {
                         <button className="text-sm text-blue-500 hover:text-blue-400">View All</button>
                     </div>
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {[
-                            { name: 'frontend-app-deploy', status: 'success', time: '2 mins ago', duration: '45s' },
-                            { name: 'backend-api-test', status: 'failed', time: '15 mins ago', duration: '1m 20s' },
-                            { name: 'docker-image-build', status: 'running', time: 'Now', duration: 'Running' },
-                        ].map((build, i) => (
-                            <div key={i} className="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <div className="flex items-center gap-3">
-                                    {build.status === 'success' && <CheckCircle2 className="text-green-500" size={20} />}
-                                    {build.status === 'failed' && <XCircle className="text-red-500" size={20} />}
-                                    {build.status === 'running' && <Activity className="text-yellow-500 animate-pulse" size={20} />}
-                                    <div>
-                                        <p className="font-medium text-gray-900 dark:text-white">{build.name}</p>
-                                        <p className="text-xs text-gray-500">{build.time}</p>
+                        {recentBuilds.length > 0 ? (
+                            recentBuilds.map((build, i) => (
+                                <div key={i} className="p-4 flex items-center justify-between hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <div className="flex items-center gap-3">
+                                        {build.status === 'success' && <CheckCircle2 className="text-green-500" size={20} />}
+                                        {build.status === 'failed' && <XCircle className="text-red-500" size={20} />}
+                                        {build.status === 'running' && <Activity className="text-yellow-500 animate-pulse" size={20} />}
+                                        <div>
+                                            <p className="font-medium text-gray-900 dark:text-white">{build.name}</p>
+                                            <p className="text-xs text-gray-500">{build.time}</p>
+                                        </div>
                                     </div>
+                                    <span className="text-sm text-gray-500 font-mono">{build.duration}</span>
                                 </div>
-                                <span className="text-sm text-gray-500 font-mono">{build.duration}</span>
+                            ))
+                        ) : (
+                            <div className="p-8 text-center text-gray-500">
+                                {loading ? 'Loading builds...' : 'No recent builds available'}
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
 
@@ -132,24 +156,26 @@ const DashboardHome = () => {
                         <button className="text-sm text-blue-500 hover:text-blue-400">View All</button>
                     </div>
                     <div className="divide-y divide-gray-200 dark:divide-gray-700">
-                        {[
-                            { repo: 'devops-dashboard', action: 'New commit', user: 'arunp', time: '10 mins ago' },
-                            { repo: 'microservices-demo', action: 'Pull Request #42', user: 'jdoe', time: '1 hour ago' },
-                            { repo: 'infra-as-code', action: 'Issue created', user: 'alice', time: '3 hours ago' },
-                        ].map((activity, i) => (
-                            <div key={i} className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
-                                <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold">
-                                    {activity.user[0].toUpperCase()}
+                        {githubActivity.length > 0 ? (
+                            githubActivity.map((activity, i) => (
+                                <div key={i} className="p-4 flex items-center gap-3 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors">
+                                    <div className="w-8 h-8 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center text-xs font-bold">
+                                        {activity.user.substring(0, 2).toUpperCase()}
+                                    </div>
+                                    <div className="flex-1">
+                                        <p className="text-sm text-gray-900 dark:text-white">
+                                            <span className="font-medium">{activity.user}</span> {activity.action}
+                                        </p>
+                                        <p className="text-xs text-gray-500">{activity.repo} • {activity.time}</p>
+                                    </div>
+                                    <GitCommit size={16} className="text-gray-400" />
                                 </div>
-                                <div className="flex-1">
-                                    <p className="text-sm text-gray-900 dark:text-white">
-                                        <span className="font-medium">{activity.user}</span> {activity.action}
-                                    </p>
-                                    <p className="text-xs text-gray-500">{activity.repo} • {activity.time}</p>
-                                </div>
-                                <GitCommit size={16} className="text-gray-400" />
+                            ))
+                        ) : (
+                            <div className="p-8 text-center text-gray-500">
+                                {loading ? 'Loading activity...' : 'No recent activity available'}
                             </div>
-                        ))}
+                        )}
                     </div>
                 </div>
             </div>

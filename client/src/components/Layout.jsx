@@ -32,15 +32,21 @@ const SidebarItem = ({ icon: Icon, label, path, active, onClick }) => (
 
 const Layout = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [isDarkMode, setIsDarkMode] = useState(true);
+    const [isDarkMode, setIsDarkMode] = useState(() => {
+        // Load theme preference from localStorage, default to dark if not set
+        const savedTheme = localStorage.getItem('theme');
+        return savedTheme === 'dark' || savedTheme === null;
+    });
     const location = useLocation();
 
-    // Toggle Dark Mode
+    // Toggle Dark Mode and persist to localStorage
     useEffect(() => {
         if (isDarkMode) {
             document.documentElement.classList.add('dark');
+            localStorage.setItem('theme', 'dark');
         } else {
             document.documentElement.classList.remove('dark');
+            localStorage.setItem('theme', 'light');
         }
     }, [isDarkMode]);
 
@@ -92,10 +98,10 @@ const Layout = () => {
                 <div className="p-4 border-t border-gray-800">
                     <div className="flex items-center gap-3 p-3 rounded-lg bg-gray-800/50 border border-gray-700">
                         <div className="w-10 h-10 rounded-full bg-gradient-to-tr from-blue-500 to-purple-500 flex items-center justify-center text-white font-bold">
-                            JD
+                            PM
                         </div>
                         <div className="flex-1 min-w-0">
-                            <p className="text-sm font-medium text-white truncate">John Doe</p>
+                            <p className="text-sm font-medium text-white truncate">PARTHIPAN M</p>
                             <p className="text-xs text-gray-400 truncate">DevOps Engineer</p>
                         </div>
                     </div>
