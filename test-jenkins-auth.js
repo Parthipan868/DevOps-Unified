@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './server/.env' });
 
-const JENKINS_URL = process.env.JENKINS_URL || 'http://localhost:8080';
+const JENKINS_URL = process.env.JENKINS_URL || 'http://localhost:8585';
 const JENKINS_TOKEN = process.env.JENKINS_TOKEN;
 
 console.log('🔍 Jenkins Authentication Tester\n');
@@ -55,7 +55,7 @@ async function runTests() {
 
     console.log('\n⚠️  All username variations failed!');
     console.log('\n📋 Manual Steps:');
-    console.log('1. Open Jenkins: http://localhost:8080');
+    console.log('1. Open Jenkins: http://localhost:8585');
     console.log('2. Log in and click your name (top right)');
     console.log('3. Check the URL - it will be like: /user/[USERNAME]/');
     console.log('4. That [USERNAME] is your exact Jenkins username');

@@ -3,7 +3,7 @@
 To connect your DevOps Dashboard to Jenkins, you need your **Username** and an **API Token**.
 
 ## 1. Find Your Username
-*   Log in to your Jenkins dashboard (usually `http://localhost:8080`).
+*   Log in to your Jenkins dashboard (usually `http://localhost:8585`).
 *   Look at the **top right corner** of the page.
 *   The name displayed there is your **Username** (e.g., `admin` or `arunp`).
 
@@ -20,9 +20,9 @@ To connect your DevOps Dashboard to Jenkins, you need your **Username** and an *
 Open the `server/.env` file in your project and add the following lines:
 
 ```env
-JENKINS_URL=http://localhost:8080
+JENKINS_URL=http://localhost:8585
 JENKINS_USERNAME=your_username_here
 JENKINS_TOKEN=your_generated_token_here
 ```
 
-*(Replace `http://localhost:8080` if your Jenkins runs on a different URL)*
+*(Replace `http://localhost:8585` if your Jenkins runs on a different URL)*

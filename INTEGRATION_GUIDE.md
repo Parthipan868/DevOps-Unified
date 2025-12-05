@@ -41,7 +41,7 @@ Update `server/controllers/githubController.js` to use real GitHub API instead o
 #### Update Backend:
 Add to `server/.env`:
 ```env
-JENKINS_URL=http://your-jenkins-server:8080
+JENKINS_URL=http://your-jenkins-server:8585
 JENKINS_USERNAME=your_username
 JENKINS_TOKEN=your_jenkins_token
 ```

@@ -280,7 +280,7 @@ GET /api/docker/logs/:id → Fetch container logs
    Authorization: Basic base64(username:token)
    ↓
 5. Backend sends POST to Jenkins API
-   POST http://localhost:8080/job/my-pipeline/build
+   POST http://localhost:8585/job/my-pipeline/build
    ↓
 6. Jenkins queues the build
    ↓
@@ -370,7 +370,7 @@ GET /api/docker/logs/:id → Fetch container logs
 localhost:5173 → Frontend (Vite dev server)
 localhost:5000 → Backend (Express server)
 localhost:27017 → MongoDB
-localhost:8080 → Jenkins
+localhost:8585 → Jenkins
 Docker Desktop → Docker daemon
 ```
 
@@ -418,7 +418,7 @@ Domain: ec2-xx-xx-xx-xx.compute.amazonaws.com
 PORT=5000
 MONGO_URI=mongodb://localhost:27017/devops-dashboard
 GITHUB_TOKEN=ghp_xxxxxxxxxxxxx
-JENKINS_URL=http://localhost:8080
+JENKINS_URL=http://localhost:8585
 JENKINS_USERNAME=admin
 JENKINS_TOKEN=11xxxxxxxxxxxxx
 ```

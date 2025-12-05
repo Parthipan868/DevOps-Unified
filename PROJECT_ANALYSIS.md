@@ -199,7 +199,7 @@ Make sure your `.env` file has:
 ```env
 GITHUB_TOKEN=your_github_token
 GITHUB_USERNAME=Parthipan868
-JENKINS_URL=http://localhost:8080
+JENKINS_URL=http://localhost:8585
 JENKINS_USERNAME=your_username
 JENKINS_TOKEN=your_token
 MONGO_URI=mongodb://localhost:27017/devops-dashboard

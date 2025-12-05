@@ -1,7 +1,7 @@
 import Pipeline from '../models/Pipeline.js';
 import axios from 'axios';
 
-const JENKINS_URL = process.env.JENKINS_URL || 'http://localhost:8080';
+const JENKINS_URL = process.env.JENKINS_URL || 'http://localhost:8585';
 const JENKINS_USERNAME = process.env.JENKINS_USERNAME;
 const JENKINS_TOKEN = process.env.JENKINS_TOKEN;
 

@@ -3,7 +3,7 @@ import dotenv from 'dotenv';
 
 dotenv.config({ path: './server/.env' });
 
-const JENKINS_URL = process.env.JENKINS_URL || 'http://localhost:8080';
+const JENKINS_URL = process.env.JENKINS_URL || 'http://localhost:8585';
 const JENKINS_USERNAME = process.env.JENKINS_USERNAME;
 const JENKINS_TOKEN = process.env.JENKINS_TOKEN;
 
@@ -60,7 +60,7 @@ async function testWithCrumb() {
         } else if (error.response?.status === 401) {
             console.log('\n🔐 Still getting 401. Let\'s verify your credentials:');
             console.log('\n📝 Please check:');
-            console.log('1. Open Jenkins in browser: http://localhost:8080');
+            console.log('1. Open Jenkins in browser: http://localhost:8585');
             console.log('2. Click your username in top-right corner');
             console.log('3. Look at the URL - it should be: /user/YOUR_USERNAME/');
             console.log('4. Tell me what YOUR_USERNAME is exactly (case-sensitive)');

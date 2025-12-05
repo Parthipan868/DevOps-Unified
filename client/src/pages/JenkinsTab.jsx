@@ -263,7 +263,7 @@ const JenkinsTab = () => {
                             <div>
                                 <h4 className="font-semibold text-gray-900 dark:text-white mb-2">To create a new Jenkins Pipeline:</h4>
                                 <ol className="list-decimal list-inside space-y-2 text-gray-700 dark:text-gray-300">
-                                    <li>Open your Jenkins dashboard at <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">http://localhost:8080</code></li>
+                                    <li>Open your Jenkins dashboard at <code className="px-2 py-1 bg-gray-100 dark:bg-gray-800 rounded text-sm">http://localhost:8585</code></li>
                                     <li>Click on <strong>"New Item"</strong> in the left sidebar</li>
                                     <li>Enter a name for your pipeline</li>
                                     <li>Select <strong>"Pipeline"</strong> as the item type</li>
@@ -278,7 +278,7 @@ const JenkinsTab = () => {
                                     Once created, your new pipeline will automatically appear in this dashboard!
                                 </p>
                                 <a
-                                    href="http://localhost:8080"
+                                    href="http://localhost:8585"
                                     target="_blank"
                                     rel="noopener noreferrer"
                                     className="inline-flex items-center gap-2 px-4 py-2 bg-orange-600 text-white rounded-lg font-medium hover:bg-orange-700 transition-colors"
